@@ -1,6 +1,5 @@
 <!--
-This script is for creating new blog posts.
-
+This script is for creating new posts.
 
 -->
 
@@ -31,22 +30,30 @@ This script is for creating new blog posts.
 
 
 <div id="all_blogs">
-    <form action="process.php" method="post">
+    <form action="process.php" method="post" enctype="multipart/form-data">
         <fieldset>
-        <legend>New Blog Post</legend>
-        <p>
-            <label for="title">Title</label>
-            <input name="title" id="title" />
-        </p>
-        <p>
-            <label for="content">Content</label>
-            <textarea name="content" id="content"></textarea>
-        </p>
-        <p>
-            <input type="submit" name="command" value="Create" />
-        </p>
+            <legend>New Blog Post</legend>
+            <p>
+                <label for="title">Title</label>
+                <input name="title" id="title" />
+            </p>
+            <p>
+                <label for="content">Content</label>
+                <textarea name="content" id="content"></textarea>
+            </p>
+            <p>
+                <input type="submit" name="command" value="Create" />
+            </p>
         </fieldset>
+
+        <p>
+            <label for="image">Image Filename:</label>
+            <input type="file" name="fileToUpload" id="fileToUpload">
+        </p>
+
     </form>
+
+
 </div> <!-- END div id="all_blogs" -->
 
 

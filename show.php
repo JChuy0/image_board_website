@@ -65,6 +65,8 @@ This script lets you see the entire message of a post.
             <div class='blog_content'>
                 <?= $row['Content'] ?>
             </div>
+
+            <img src="Uploads/<?= $row['Image_Name']?>" />
         </div> <!-- END div class="blog_post" -->
     <?php endwhile ?>
 
