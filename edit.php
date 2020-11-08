@@ -62,6 +62,12 @@ This script lets you edit existing blog posts.
         <textarea name="content" id="content"><?= $row['Content'] ?></textarea>
       </p>
       <p>
+      <?php if(strlen($row['Image_Name']) > 1) : ?>
+        <input type="checkbox" id="imageCheckBox" name="imageCheckBox" value="deleteImage" />
+        <label for="imageCheckBox"> Delete Image?</label><br>
+      <?php endif ?>
+      
+      
         <input type="hidden" name="id" value="<?= $id?>" />
         <input type="submit" name="command" value="Update" />
         <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this post?')" />
