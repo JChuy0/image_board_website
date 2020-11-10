@@ -1,6 +1,5 @@
 <!--
-This script runs the home page.
-
+This script runs the registration and login page.
 
 -->
 
@@ -8,10 +7,6 @@ This script runs the home page.
 <?php
     require 'connect.php';
 
-
-    $query = "SELECT * FROM dioramas ORDER BY diorama_id DESC";
-    $statement = $db->prepare($query);
-    $statement->execute();
 
 ?>
 
@@ -30,25 +25,24 @@ This script runs the home page.
     </div> <!-- END div id="header" -->
 
 <ul id="menu">
-    <li><a href="index.php" class='active'>Home</a></li>
+    <li><a href="index.php" >Home</a></li>
     <li><a href="create.php" >New Post</a></li>
-    <li><a href="register.php" >Login/Register</a></li>
+    <li><a href="login.php" class='active'>Login</a></li>
 </ul> <!-- END div id="menu" -->
 
+<form action="process-users.php" method="post">
+    <fieldset>
+        <legend>Login</legend>
 
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
 
-
-
-<div id="all_blogs">
-
-<?php while($row = $statement->fetch() ) : ?>
-
-    <div class="blog_post">
-      <h2><a href="show.php?id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
-    </div> <!-- END div class="blog_post" -->
-<?php endwhile ?>
-
-</div> <!-- END div id="all_blogs" -->
+        <label for="password_one">Password:</label>
+        <input type="password" id="password_one" name="password_one" required><br><br>
+        
+        <input type="submit" name="command" value="Login"/>
+    </fieldset>
+</form>
 
 
 
@@ -62,3 +56,4 @@ This script runs the home page.
 
 </body>
 </html>
+

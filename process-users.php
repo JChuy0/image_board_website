@@ -26,6 +26,20 @@ print("<br><br><br>");
         //Determine the primary key of the inserted row. 
         $insert_id = $db->lastInsertId(); 
              
+    } else if (($_POST['command']) === 'Login') {
+        $query    = "SELECT Username FROM User WHERE Username = :username AND Userpass = :userpass";
+        $statement = $db->prepare($query);
+        $statement->bindvalue(':username', $username);
+        $statement->bindvalue(':userpass', $userpass);
+
+        $statement->execute();
+
+        if($statement->rowcount() > 0) {
+            print("You have logged in as '{$username}'.");
+        } else {
+            print("The username/paassword you have entered does not match our records. Please try again.");
+        }
+
     }
 
 //        header("Location: index.php"); 
