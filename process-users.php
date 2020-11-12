@@ -24,20 +24,32 @@ print("<br><br><br>");
         $statement->execute(); 
  
         //Determine the primary key of the inserted row. 
-        $insert_id = $db->lastInsertId(); 
+        $insert_id = $db->lastInsertId();
+
+        print("User '{$username}' has been successfully registered.");
              
     } else if (($_POST['command']) === 'Login') {
-        $query    = "SELECT Username FROM User WHERE Username = :username AND Userpass = :userpass";
+        $query    = "SELECT Username, AccessLevel FROM User WHERE Username = :username AND Userpass = :userpass";
         $statement = $db->prepare($query);
         $statement->bindvalue(':username', $username);
         $statement->bindvalue(':userpass', $userpass);
 
         $statement->execute();
 
+        $row = $statement->fetch();
+
         if($statement->rowcount() > 0) {
-            print("You have logged in as '{$username}'.");
+            session_start();
+            $_SESSION = [];
+            $_SESSION['Username'] = $row['Username'];
+            $_SESSION['AccessLevel'] = $row['AccessLevel'];
+            print("You have logged in as '{$username}'.<BR>");
+
+            print_r($_SESSION);
         } else {
             print("The username/paassword you have entered does not match our records. Please try again.");
+
+//            header("Location: login.php");
         }
 
     }

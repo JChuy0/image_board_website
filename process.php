@@ -74,20 +74,20 @@ print("<br><br><br>");
         
             unlink("uploads/{$row['Image_Name']}");
  
-/* 
+
             $query = "DELETE FROM Dioramas WHERE Diorama_ID = :id"; 
             $statement = $db->prepare($query); 
             $statement->bindValue(':id', $id, PDO::PARAM_INT); 
             $statement->execute();
-*/ 
+ 
         } 
     } 
  
     if(isset($errorMsg)) { 
         echo $errorMsg; 
     } else { 
-//        header("Location: index.php"); 
-//        exit(); 
+        header("Location: index.php"); 
+        exit(); 
 } 
 
 
@@ -152,8 +152,8 @@ function verify_Image() {
 
 
 function resizeImage($resourceType, $image_width, $image_height) {
-    $resizeWidth = ($image_width * 0.3);
-    $resizeHeight = ($image_height * 0.3);
+    $resizeWidth = 690;
+    $resizeHeight = 460;
     $imageLayer = imagecreatetruecolor($resizeWidth, $resizeHeight);
     imagecopyresampled($imageLayer, $resourceType, 0, 0, 0, 0, $resizeWidth, $resizeHeight, $image_width, $image_height);
     return $imageLayer;

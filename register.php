@@ -27,7 +27,8 @@ This script runs the registration and login page.
 <ul id="menu">
     <li><a href="index.php" >Home</a></li>
     <li><a href="create.php" >New Post</a></li>
-    <li><a href="login.php" class='active'>Login/Register</a></li>
+    <li><a href="register.php" class='active'>Register</a></li>
+    <li><a href="login.php" >Login</a></li>
 </ul> <!-- END div id="menu" -->
 
 <form action="process-users.php" method="post">
@@ -46,14 +47,14 @@ This script runs the registration and login page.
         <label for="password_two">Re-enter Password:</label>
         <input type="password" id="password_two" name="password_two" required><br><br>
         
-        <input type="submit" name="command" value="Register" onclick="passMatch()"/>
+        <input type="submit" name="command" value="Register" onclick="passwordMatch()"/>
     </fieldset>
 </form>
 
 
 <script>
     // Displays an alert message if the two passwords entered are not identical.
-    function passMatch() {
+    function passwordMatch() {
         var pass_one = document.getElementById("password_one").value;
         var pass_two = document.getElementById("password_two").value;
 
