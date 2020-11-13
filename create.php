@@ -4,8 +4,11 @@ This script is for creating new posts.
 -->
 
 <?php
-    require 'authenticate.php';
+    session_start();
 
+    if(!isset($_SESSION['Username'])) {
+        exit("Access Denied: If you would like to create a new post, please login.");
+    }
 
 ?>
 

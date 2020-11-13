@@ -1,10 +1,6 @@
 <?php 
     require "connect.php"; 
- 
-print_r($_POST); 
-print("<br><br><br>"); 
 
- 
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
     $userpass = filter_input(INPUT_POST, 'password_one', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email    = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -49,13 +45,13 @@ print("<br><br><br>");
         } else {
             print("The username/paassword you have entered does not match our records. Please try again.");
 
-//            header("Location: login.php");
+            header("Location: login.php");
         }
 
     }
 
-//        header("Location: index.php"); 
-//        exit(); 
+        header("Location: index.php"); 
+        exit("Success message");
 
 
 

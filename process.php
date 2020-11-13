@@ -160,12 +160,5 @@ function resizeImage($resourceType, $image_width, $image_height) {
 }
 
 
-function delete_Image() {
-}
-
-
-
-
-
      
 ?>

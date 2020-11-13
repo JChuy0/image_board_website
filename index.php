@@ -1,7 +1,6 @@
 <!--
 This script runs the home page.
 
-
 -->
 
 
@@ -28,35 +27,32 @@ This script runs the home page.
 
 <div id="wrapper">
     <div id="header">
-        <h1><a href="index.php">Best Blog Ever - Index</a></h1>
+        <h1><a href="index.php">DIY Crafters - Index</a></h1>
     </div> <!-- END div id="header" -->
 
 
-    <div id="user-control-panel">
-        <p>Welcome back, <?= $_SESSION['Username']; ?></p>
-        <a href="index.php" onclick="testfunc()" >(Logout)</a>
-        <input type="submit" name="logout" value="Logout" onclick="testfunc()" />
+    <div id="user_control_panel">
+        <p>Welcome back, <?= $_SESSION['Username']; ?>
+            (<a href="logout.php?logout=true" onclick="confirmScript()">Logout</a>)</p>
     </div>
-
 
 
 <ul id="menu">
     <li><a href="index.php" class='active'>Home</a></li>
     <li><a href="create.php" >New Post</a></li>
-    <li id="register-page"><a href="register.php" >Register</a></li>
-    <li id="login-page"><a href="login.php" >Login</a></li>
+    <li id="register_page"><a href="register.php" >Register</a></li>
+    <li id="login_page"><a href="login.php" >Login</a></li>
+    <li><a href="users.php" >Users</a></li>
 </ul> <!-- END div id="menu" -->
 
 
 <div id="all_blogs">
+    <?php while($row = $statement->fetch() ) : ?>
 
-<?php while($row = $statement->fetch() ) : ?>
-
-    <div class="blog_post">
-      <h2><a href="show.php?id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
-    </div> <!-- END div class="blog_post" -->
-<?php endwhile ?>
-
+        <div class="blog_post">
+        <h2><a href="show.php?id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
+        </div> <!-- END div class="blog_post" -->
+    <?php endwhile ?>
 </div> <!-- END div id="all_blogs" -->
 
 
@@ -68,37 +64,34 @@ This script runs the home page.
 </div> <!-- END div id="wrapper" -->
 
 
-<!--
-<?php if(isset($_SESSION)) : ?>
+<?php if(isset($_SESSION['Username'])) : ?>
     <script>
-        document.getElementById("register-page").style.display = "none";
-        document.getElementById("login-page").style.display = "none";
-        document.getElementById("user-control-panel").style.display = "block";
+        document.getElementById("register_page").style.display = "none";
+        document.getElementById("login_page").style.display = "none";
+        document.getElementById("user_control_panel").style.display = "block";
+    </script>
+<?php else : ?>
+    <script>
+        document.getElementById("register_page").style.display = "inline";
+        document.getElementById("login_page").style.display = "inline";
+        document.getElementById("user_control_panel").style.display = "none";
     </script>
 <?php endif ?>
--->
+
 
 
 </body>
 </html>
 
-
 <script>
-    function testfunc() {
-        <?php
-        if(isset($_SESSION)) :
-            $_SESSION = [];
-        endif ?>
-        
-//        header("Location: index.php"); 
-
-        alert("melon");
+function confirmScript() {
+    $result = confirm("Log out?");
+    if(!$result) {
+        event.preventDefault();
     }
-
-    function anothertest() {
-        alert("banana");
-    }
+}
 
 </script>
 
 
+<!--        document.getElementById("user_control_panel").style.display = "block"; -->

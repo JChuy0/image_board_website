@@ -6,7 +6,6 @@ This script lets you edit existing blog posts.
 
 <?php
   require 'connect.php';
-  require 'authenticate.php';
   
   if((filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)) ) {
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);

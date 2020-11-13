@@ -27,6 +27,7 @@ This script runs the registration and login page.
 <ul id="menu">
     <li><a href="index.php" >Home</a></li>
     <li><a href="create.php" >New Post</a></li>
+    <li><a href="register.php" >Register</a></li>
     <li><a href="login.php" class='active'>Login</a></li>
 </ul> <!-- END div id="menu" -->
 
