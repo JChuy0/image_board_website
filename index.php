@@ -7,12 +7,34 @@ This script runs the home page.
 <?php
     require 'connect.php';
 
-    $query = "SELECT * FROM dioramas ORDER BY diorama_id DESC";
-    $statement = $db->prepare($query);
-    $statement->execute();
+    print_r($_GET);
 
     session_start();
     print_r($_SESSION);
+
+
+    if((isset($_SESSION['Username'])) && (isset($_GET['orderby'])) ) {
+
+        // Filters the orderby and sort properties in the $_GET super global.
+        $orderby = filter_input(INPUT_GET, 'orderby', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $sort = strtoupper(filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+
+        // If sort contains any value aside from ASC or DESC, then it is set to ASC.
+        if(($sort !== "ASC") && ($sort !== "DESC")) {
+            $sort = "ASC";
+        }
+
+        if( ($orderby === "Title") || ($orderby === "Date_Posted") || ($orderby === "Date_Edited") ) {
+            $query = "SELECT * FROM dioramas ORDER BY $orderby $sort";
+            $statement = $db->prepare($query);
+            $statement->execute();            
+        }
+
+    } else {
+        $query = "SELECT * FROM dioramas ORDER BY diorama_id DESC";
+        $statement = $db->prepare($query);
+        $statement->execute();    
+    }
     
 ?>
 
@@ -36,6 +58,9 @@ This script runs the home page.
             (<a href="logout.php?logout=true" onclick="confirmScript()">Logout</a>)</p>
     </div>
 
+<?php if(isset($_GET['orderby'])) : ?>
+    <p>Page has been ordered by <?= $_GET["orderby"]?> (<?= $_GET["sort"]?>)</p>
+<?php endif ?>
 
 <ul id="menu">
     <li><a href="index.php" class='active'>Home</a></li>
@@ -44,6 +69,16 @@ This script runs the home page.
     <li id="login_page"><a href="login.php" >Login</a></li>
     <li><a href="users.php" >Users</a></li>
 </ul> <!-- END div id="menu" -->
+
+<ul id="sortmenu">
+    <p>Sort by:</p>
+    <li><a href="index.php?orderby=Title&sort=ASC" >Title (Ascending)</a></li>
+    <li><a href="index.php?orderby=Title&sort=DESC" >Title (Descending)</a></li>
+    <li><a href="index.php?orderby=Date_Posted&sort=ASC" >Date Posted (Ascending)</a></li>
+    <li><a href="index.php?orderby=Date_Posted&sort=DESC" >Date Posted (Descending)</a></li>
+    <li><a href="index.php?orderby=Date_Edited&sort=ASC" >Date Edited (Ascending)</a></li>
+    <li><a href="index.php?orderby=Date_Edited&sort=DESC" >Date Edited (Descending)</a></li>
+</ul>
 
 
 <div id="all_blogs">
@@ -69,12 +104,14 @@ This script runs the home page.
         document.getElementById("register_page").style.display = "none";
         document.getElementById("login_page").style.display = "none";
         document.getElementById("user_control_panel").style.display = "block";
+        document.getElementById("sortmenu").style.display = "block";
     </script>
 <?php else : ?>
     <script>
         document.getElementById("register_page").style.display = "inline";
         document.getElementById("login_page").style.display = "inline";
         document.getElementById("user_control_panel").style.display = "none";
+        document.getElementById("sortmenu").style.display = "none";
     </script>
 <?php endif ?>
 
@@ -91,7 +128,17 @@ function confirmScript() {
     }
 }
 
+
+function sortScript() {
+}
+
+
+
 </script>
+
+
+
+
 
 
 <!--        document.getElementById("user_control_panel").style.display = "block"; -->
