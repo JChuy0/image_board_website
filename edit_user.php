@@ -9,13 +9,14 @@ require 'authenticate.php';
         $accesslevel = filter_input(INPUT_POST, 'accesslevel', FILTER_SANITIZE_NUMBER_INT);
         $id          = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT); 
 
+        $hashed_password = password_hash($userpass, PASSWORD_DEFAULT);
 
 
         $query = "UPDATE `user` SET `Username` = :username, `Userpass` = :userpass, `Email` = :email, `AccessLevel` = :accesslevel WHERE `user`.`User_ID` = :id";
 
         $statement = $db->prepare($query);
         $statement->bindValue(':username', $username);
-        $statement->bindValue(':userpass', $userpass);
+        $statement->bindValue(':userpass', $hashed_password);
         $statement->bindValue(':email', $email);
         $statement->bindValue(':accesslevel', $accesslevel);
         $statement->bindValue(':id', $id);
