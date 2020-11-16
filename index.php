@@ -85,7 +85,7 @@ This script runs the home page.
     <?php while($row = $statement->fetch() ) : ?>
 
         <div class="blog_post">
-        <h2><a href="show.php?id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
+        <h2><a href="show.php?diorama_id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
         </div> <!-- END div class="blog_post" -->
     <?php endwhile ?>
 </div> <!-- END div id="all_blogs" -->
@@ -128,16 +128,7 @@ function confirmScript() {
     }
 }
 
-
-function sortScript() {
-}
-
-
-
 </script>
-
-
-
 
 
 

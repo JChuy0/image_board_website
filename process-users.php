@@ -9,7 +9,7 @@
     if(($_POST['command']) === 'Register') {
 
         //Build the parameterized SQL query and bind sanitized values to the parameters 
-        $query     = "INSERT INTO User (Username, Userpass, Email, AccessLevel) values (:username, :userpass, :email, :accesslevel)"; 
+        $query     = "INSERT INTO Users (Username, Userpass, Email, AccessLevel) values (:username, :userpass, :email, :accesslevel)"; 
         $statement = $db->prepare($query);
         $statement->bindValue(':username', $username);
         $statement->bindValue(':userpass', $hashed_password);
@@ -26,32 +26,31 @@
              
     } else if (($_POST['command']) === 'Login') {
 
-        $query    = "SELECT Username, Userpass, AccessLevel FROM User WHERE Username = :username";
+        $query    = "SELECT Username, Userpass, User_ID, AccessLevel FROM Users WHERE Username = :username";
         $statement = $db->prepare($query);
         $statement->bindvalue(':username', $username);
 
         $statement->execute();
         $row = $statement->fetch();
 
+
         if(password_verify($userpass, $row['Userpass'])) {
             session_start();
             $_SESSION = [];
             $_SESSION['Username'] = $row['Username'];
+            $_SESSION['User_ID'] = $row['User_ID'];
             $_SESSION['AccessLevel'] = $row['AccessLevel'];
             print("You have logged in as '{$username}'.<BR>");
 
         } else {
             print("The username/password you have entered does not match our records. Please try again.");
 
-//            header("Location: login.php");
+            header("Location: login.php");
         }
 
     }
 
-//        header("Location: index.php"); 
-//        exit("Success message");
-
-
-
+    header("Location: index.php"); 
+    exit("Success message");
      
 ?>

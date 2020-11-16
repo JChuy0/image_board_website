@@ -38,11 +38,11 @@ This script is for creating new posts.
             <legend>New Blog Post</legend>
             <p>
                 <label for="title">Title</label>
-                <input name="title" id="title" />
+                <input name="title" id="title" required/>
             </p>
             <p>
                 <label for="content">Content</label>
-                <textarea name="content" id="content"></textarea>
+                <textarea name="content" id="content" required></textarea>
             </p>
             <p>
                 <input type="submit" name="command" value="Create" />
@@ -54,6 +54,7 @@ This script is for creating new posts.
             <input type="file" name="fileToUpload" id="fileToUpload">
         </p>
 
+        <input type="hidden" name="user_id" value="<?= $_SESSION['User_ID']?>" />
     </form>
 
 

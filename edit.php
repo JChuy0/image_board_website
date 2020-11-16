@@ -7,12 +7,12 @@ This script lets you edit existing blog posts.
 <?php
   require 'connect.php';
   
-  if((filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)) ) {
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+  if((filter_input(INPUT_GET, 'diorama_id', FILTER_VALIDATE_INT)) ) {
+    $diorama_id = filter_input(INPUT_GET, 'diorama_id', FILTER_SANITIZE_NUMBER_INT);
 
-    $query = "SELECT * FROM Dioramas WHERE Diorama_ID = :id";
+    $query = "SELECT * FROM Dioramas WHERE Diorama_ID = :diorama_id";
     $statement = $db->prepare($query);
-    $statement->bindvalue(':id', $id, PDO::PARAM_INT);
+    $statement->bindvalue(':diorama_id', $diorama_id, PDO::PARAM_INT);
     $statement->execute();
   
     $row = $statement->fetch();
@@ -67,7 +67,7 @@ This script lets you edit existing blog posts.
       <?php endif ?>
       
       
-        <input type="hidden" name="id" value="<?= $id?>" />
+        <input type="hidden" name="diorama_id" value="<?= $diorama_id?>" />
         <input type="submit" name="command" value="Update" />
         <input type="submit" name="command" value="Delete" onclick="return confirm('Are you sure you wish to delete this post?')" />
       </p>

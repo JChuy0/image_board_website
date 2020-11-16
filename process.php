@@ -8,80 +8,92 @@ print_r($_FILES);
 print("<br><br><br>"); 
 
  
-    $title   = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-    $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-    $id      = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT); 
+    $title       = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+    $content     = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+    $diorama_id  = filter_input(INPUT_POST, 'diorama_id', FILTER_SANITIZE_NUMBER_INT);
+    $user_id     = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+    $comment     = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 //    $image_name = filter_var($_FILES["fileToUpload"]["name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
- 
-    if( (strlen($title) < 1) || (strlen($content) < 1) ) { 
-        $errorMsg = "Please make sure both the title and content text fields are at least 1 character long."; 
-    } else { 
-        if(($_POST['command']) === 'Create') { 
- 
-            $image_name = verify_Image();
-
- 
-            //Build the parameterized SQL query and bind sanitized values to the parameters 
-            $query     = "INSERT INTO Dioramas (Title, Content, Image_Name) values (:title, :content, :image_name)"; 
-            $statement = $db->prepare($query); 
-            $statement->bindValue(':title', $title); 
-            $statement->bindValue(':content', $content); 
-            $statement->bindValue(':image_name', $image_name); 
- 
-            //Execute the INSERT prepared statement. 
-            $statement->execute(); 
- 
-            //Determine the primary key of the inserted row. 
-            $insert_id = $db->lastInsertId(); 
-             
-        } elseif (($_POST['command']) === 'Update') { 
-
-            if(isset($_POST['imageCheckBox'])) {
-                $query = "SELECT Image_Name FROM Dioramas WHERE Diorama_ID = :id"; 
-                $statement = $db->prepare($query); 
-                $statement->bindValue(':id', $id, PDO::PARAM_INT); 
-                $statement->execute(); 
-            
-                $row = $statement->fetch();
-                unlink("uploads/{$row['Image_Name']}"); 
-            
-                $query = "UPDATE dioramas SET Image_Name = NULL WHERE Diorama_ID = :id";
-                $statement = $db->prepare($query);
-                $statement->bindvalue(':id', $id, PDO::PARAM_INT);
-                $statement->execute();
-            }
 
 
+    if(($_POST['command']) === 'Create') { 
+    
+        $image_name = verify_Image();
 
-            // Build the parameterized SQL query and bind the sanitized values to the parameters 
-            $query     = "UPDATE Dioramas SET Title = :title, Content = :content WHERE Diorama_ID = :id"; 
-            $statement = $db->prepare($query); 
-            $statement->bindValue(':title', $title);         
-            $statement->bindValue(':content', $content); 
-            $statement->bindValue(':id', $id, PDO::PARAM_INT); 
-             
-            // Execute the INSERT. 
-            $statement->execute(); 
- 
-        } elseif (($_POST['command']) === 'Delete') { 
- 
-            $query = "SELECT Image_Name FROM Dioramas WHERE Diorama_ID = :id"; 
-            $statement = $db->prepare($query); 
-            $statement->bindValue(':id', $id, PDO::PARAM_INT); 
-            $statement->execute(); 
+
+        //Build the parameterized SQL query and bind sanitized values to the parameters 
+        $query     = "INSERT INTO Dioramas (Title, Content, Image_Name, User_ID) VALUES (:title, :content, :image_name, :user_id)"; 
+        $statement = $db->prepare($query); 
+        $statement->bindValue(':title', $title); 
+        $statement->bindValue(':content', $content); 
+        $statement->bindValue(':image_name', $image_name);
+        $statement->bindValue(':user_id', $user_id);
+
+        //Execute the INSERT prepared statement. 
+        $statement->execute(); 
+
+        //Determine the primary key of the inserted row. 
+        $insert_id = $db->lastInsertId(); 
         
-            $row = $statement->fetch();
-        
-            unlink("uploads/{$row['Image_Name']}");
- 
+    } elseif (($_POST['command']) === 'Update') { 
 
-            $query = "DELETE FROM Dioramas WHERE Diorama_ID = :id"; 
-            $statement = $db->prepare($query); 
-            $statement->bindValue(':id', $id, PDO::PARAM_INT); 
-            $statement->execute();
- 
-        } 
-    } 
+        if(isset($_POST['imageCheckBox'])) {
+        $query = "SELECT Image_Name FROM Dioramas WHERE Diorama_ID = :diorama_id"; 
+        $statement = $db->prepare($query); 
+        $statement->bindValue(':diorama_id', $diorama_id, PDO::PARAM_INT); 
+        $statement->execute(); 
+        
+        $row = $statement->fetch();
+        unlink("uploads/{$row['Image_Name']}"); 
+        
+        $query = "UPDATE dioramas SET Image_Name = NULL WHERE Diorama_ID = :diorama_id";
+        $statement = $db->prepare($query);
+        $statement->bindvalue(':diorama_id', $diorama_id, PDO::PARAM_INT);
+        $statement->execute();
+        }
+
+
+        // Build the parameterized SQL query and bind the sanitized values to the parameters 
+        $query     = "UPDATE Dioramas SET Title = :title, Content = :content WHERE Diorama_ID = :diorama_id"; 
+        $statement = $db->prepare($query); 
+        $statement->bindValue(':title', $title);     
+        $statement->bindValue(':content', $content); 
+        $statement->bindValue(':diorama_id', $diorama_id, PDO::PARAM_INT); 
+        
+        // Execute the INSERT. 
+        $statement->execute(); 
+
+    } elseif (($_POST['command']) === 'Delete') { 
+
+        $query = "SELECT Image_Name FROM Dioramas WHERE Diorama_ID = :diorama_id"; 
+        $statement = $db->prepare($query); 
+        $statement->bindValue(':diorama_id', $diorama_id, PDO::PARAM_INT); 
+        $statement->execute(); 
+
+        $row = $statement->fetch();
+
+        unlink("uploads/{$row['Image_Name']}");
+
+
+        $query = "DELETE FROM Dioramas WHERE Diorama_ID = :diorama_id"; 
+        $statement = $db->prepare($query); 
+        $statement->bindValue(':diorama_id', $diorama_id, PDO::PARAM_INT); 
+        $statement->execute();
+
+    } elseif (($_POST['command']) === 'Comment') {
+
+        $query = "INSERT INTO comments (User_Comment, Diorama_ID, User_ID) VALUES (:user_comment, :diorama_ID, :user_ID)";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':user_comment', $comment);
+        $statement->bindValue(':diorama_ID', $diorama_id);
+        $statement->bindValue(':user_ID', $user_id);
+
+        $statement->execute();
+
+        $insert_id = $db->lastInsertId();
+
+    }
+
  
     if(isset($errorMsg)) { 
         echo $errorMsg; 

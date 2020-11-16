@@ -12,7 +12,7 @@ require 'authenticate.php';
         $hashed_password = password_hash($userpass, PASSWORD_DEFAULT);
 
 
-        $query = "UPDATE `user` SET `Username` = :username, `Userpass` = :userpass, `Email` = :email, `AccessLevel` = :accesslevel WHERE `user`.`User_ID` = :id";
+        $query = "UPDATE `users` SET `Username` = :username, `Userpass` = :userpass, `Email` = :email, `AccessLevel` = :accesslevel WHERE `users`.`User_ID` = :id";
 
         $statement = $db->prepare($query);
         $statement->bindValue(':username', $username);
@@ -28,7 +28,7 @@ require 'authenticate.php';
         if($_GET['editUser'] === 'true') {
             $id = $_GET['ID'];
             
-            $query = "SELECT * FROM user WHERE `User_ID` = :id";
+            $query = "SELECT * FROM users WHERE `User_ID` = :id";
             $statement = $db->prepare($query);
             $statement->bindValue(':id', $id);
             $statement->execute();
@@ -71,7 +71,7 @@ require 'authenticate.php';
       </p>
       <p>
         <label for="userpass">Password:</label>
-        <input type="text" name="userpass" id="userpass" value="<?=$row['Userpass']?>" />
+        <input type="password" name="userpass" id="userpass" value="<?=$row['Userpass']?>" />
       </p>
       <p>
         <label for="email">Email:</label>

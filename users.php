@@ -16,7 +16,7 @@ This script lets administrators access the users table, allowing them to view, c
 
         $hashed_password = password_hash($userpass, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO user (Username, Userpass, Email, AccessLevel) VALUES (:username, :userpass, :email, :accesslevel)";
+        $query = "INSERT INTO users (Username, Userpass, Email, AccessLevel) VALUES (:username, :userpass, :email, :accesslevel)";
 
         $statement = $db->prepare($query);
         $statement->bindValue(':username', $username);
@@ -71,8 +71,7 @@ This script lets administrators access the users table, allowing them to view, c
 
             <label for="userpass">Password:</label>
             <input type="text" name="userpass" id="userpass" />
-        </p>
-        <p>
+
             <label for="email">Email:</label>
             <input type="text" name="email" id="email" />
 
@@ -90,7 +89,7 @@ This script lets administrators access the users table, allowing them to view, c
                     <tr>
                         <th>User ID</th>
                         <th>Username</td>
-                        <th>Password</td>
+<!--                        <th>Password</td> -->
                         <th>Email</td>
                         <th>Access Level</td>
                     </tr>
@@ -98,7 +97,7 @@ This script lets administrators access the users table, allowing them to view, c
                         <tr>
                             <td><?=$row['User_ID'] ?></td>
                             <td><?=$row['Username'] ?></td>
-                            <td><?=$row['Userpass'] ?></td>
+<!--                            <td><?=$row['Userpass'] ?></td> -->
                             <td><?=$row['Email'] ?></td>
                             <td><?=$row['AccessLevel'] ?></td>
                             <td><a href="edit_user.php?editUser=true&ID=<?=$row['User_ID']?>">Edit</a></td>
