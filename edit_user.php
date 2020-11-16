@@ -12,7 +12,7 @@ require 'authenticate.php';
         $hashed_password = password_hash($userpass, PASSWORD_DEFAULT);
 
 
-        $query = "UPDATE `users` SET `Username` = :username, `Userpass` = :userpass, `Email` = :email, `AccessLevel` = :accesslevel WHERE `users`.`User_ID` = :id";
+        $query = "UPDATE users SET Username = :username, Userpass = :userpass, Email = :email, AccessLevel = :accesslevel WHERE users.User_ID = :id";
 
         $statement = $db->prepare($query);
         $statement->bindValue(':username', $username);
@@ -67,19 +67,19 @@ require 'authenticate.php';
       <legend>Edit User Information</legend>
       <p>
         <label for="username">Username:</label>
-        <input type="text" name="username" id="username" value="<?=$row['Username']?>" autofocus/>
+        <input type="text" name="username" id="username" value="<?=$row['Username']?>" autofocus required/>
       </p>
       <p>
         <label for="userpass">Password:</label>
-        <input type="password" name="userpass" id="userpass" value="<?=$row['Userpass']?>" />
+        <input type="password" name="userpass" id="userpass" value="" required/>
       </p>
       <p>
         <label for="email">Email:</label>
-        <input type="text" name="email" id="email" value="<?=$row['Email']?>" />
+        <input type="text" name="email" id="email" value="<?=$row['Email']?>" required/>
       </p>
       <p>
         <label for="accesslevel">Access Level:</label>
-        <input type="text" name="accesslevel" id="accesslevel" value="<?=$row['AccessLevel']?>" />
+        <input type="text" name="accesslevel" id="accesslevel" value="<?=$row['AccessLevel']?>" required/>
       </p>
 
         <input type="hidden" name="id" value="<?= $row['User_ID']?>" />

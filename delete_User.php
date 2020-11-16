@@ -4,11 +4,11 @@ require 'authenticate.php';
 
     if($_GET['deleteUser'] === 'true') {
 
-        $id = $_GET['ID'];
+        $user_id = $_GET['ID'];
 
-        $query = "DELETE FROM `user` WHERE `user`.`User_ID` = :id";
+        $query = "DELETE FROM users WHERE users.User_ID = :user_id";
         $statement = $db->prepare($query);
-        $statement->bindValue(':id', $id);
+        $statement->bindValue(':user_id', $user_id);
         $statement->execute();
 
         header("Location: users.php");

@@ -30,7 +30,7 @@ This script lets administrators access the users table, allowing them to view, c
         header("Location: users.php");
     }
 
-        $query = "SELECT * FROM User";
+        $query = "SELECT * FROM Users";
         $statement = $db->prepare($query);
         $statement->execute();
 ?>

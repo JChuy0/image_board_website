@@ -36,7 +36,7 @@ This script runs the registration and login page.
         <legend>Login</legend>
 
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <input type="text" id="username" name="username" autofocus required><br><br>
 
         <label for="password_one">Password:</label>
         <input type="password" id="password_one" name="password_one" required><br><br>

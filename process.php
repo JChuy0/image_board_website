@@ -1,3 +1,8 @@
+<!--    This script allows users to create new posts, edit, and delete posts. And make comments on other posts.
+
+
+    -->
+
 <?php 
     require "connect.php"; 
  
@@ -7,12 +12,14 @@ print("<br><br><br>");
 print_r($_FILES); 
 print("<br><br><br>"); 
 
- 
+
     $title       = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
     $content     = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
     $diorama_id  = filter_input(INPUT_POST, 'diorama_id', FILTER_SANITIZE_NUMBER_INT);
     $user_id     = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
     $comment     = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+// Image name was not sanitised because file names cannot contain certain characters. AND all images are renamed before being added to the database.
 //    $image_name = filter_var($_FILES["fileToUpload"]["name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
 
 
@@ -44,6 +51,8 @@ print("<br><br><br>");
         $statement->execute(); 
         
         $row = $statement->fetch();
+
+        // Unlinks and removes the image from the uploads folder.
         unlink("uploads/{$row['Image_Name']}"); 
         
         $query = "UPDATE dioramas SET Image_Name = NULL WHERE Diorama_ID = :diorama_id";
@@ -89,20 +98,15 @@ print("<br><br><br>");
         $statement->bindValue(':user_ID', $user_id);
 
         $statement->execute();
-
         $insert_id = $db->lastInsertId();
 
+        header("Location: show.php?diorama_id=$diorama_id");
+        exit();
     }
 
- 
-    if(isset($errorMsg)) { 
-        echo $errorMsg; 
-    } else { 
-        header("Location: index.php"); 
-        exit(); 
-} 
 
-
+    header("Location: index.php"); 
+    exit();
 
 
 
@@ -131,7 +135,7 @@ function verify_Image() {
             $uploadImageType = $sourceProperties[2];
             $sourceImageWidth = $sourceProperties[0];
             $sourceImageHeight = $sourceProperties[1];
-          
+
             switch ($uploadImageType) {
                 case IMAGETYPE_JPEG:
                     $resourceType = imagecreatefromjpeg($fileName); 
