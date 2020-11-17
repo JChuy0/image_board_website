@@ -4,10 +4,15 @@ This script is for creating new posts.
 -->
 
 <?php
+    require "connect.php";
     session_start();
 
     if(!isset($_SESSION['Username'])) {
         exit("Access Denied: If you would like to create a new post, please login.");
+    } else {
+        $query = "SELECT * FROM categories";
+        $statement = $db->prepare($query);
+        $statement->execute();
     }
 
 ?>
@@ -53,6 +58,15 @@ This script is for creating new posts.
             <label for="image">Image Filename:</label>
             <input type="file" name="fileToUpload" id="fileToUpload">
         </p>
+
+        <li>
+            <label for="category">Category</label>
+            <select id=category" name="category">
+                <?php while($row = $statement->fetch() ) : ?>
+                    <option value="<?=$row['ID']?>"><?=$row['Name']?></option>
+                <?php endwhile ?>
+            </select>
+        </li>
 
         <input type="hidden" name="user_id" value="<?= $_SESSION['User_ID']?>" />
     </form>

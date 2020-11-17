@@ -18,23 +18,25 @@ print("<br><br><br>");
     $diorama_id  = filter_input(INPUT_POST, 'diorama_id', FILTER_SANITIZE_NUMBER_INT);
     $user_id     = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
     $comment     = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $category_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
 
 // Image name was not sanitised because file names cannot contain certain characters. AND all images are renamed before being added to the database.
 //    $image_name = filter_var($_FILES["fileToUpload"]["name"], FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
 
 
-    if(($_POST['command']) === 'Create') { 
+    if(($_POST['command']) === 'Create') {
     
         $image_name = verify_Image();
 
 
         //Build the parameterized SQL query and bind sanitized values to the parameters 
-        $query     = "INSERT INTO Dioramas (Title, Content, Image_Name, User_ID) VALUES (:title, :content, :image_name, :user_id)"; 
+        $query     = "INSERT INTO Dioramas (Title, Content, Image_Name, User_ID, Category_ID) VALUES (:title, :content, :image_name, :user_id, :category_id)"; 
         $statement = $db->prepare($query); 
         $statement->bindValue(':title', $title); 
         $statement->bindValue(':content', $content); 
         $statement->bindValue(':image_name', $image_name);
         $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':category_id', $category_id);
 
         //Execute the INSERT prepared statement. 
         $statement->execute(); 
@@ -63,10 +65,11 @@ print("<br><br><br>");
 
 
         // Build the parameterized SQL query and bind the sanitized values to the parameters 
-        $query     = "UPDATE Dioramas SET Title = :title, Content = :content WHERE Diorama_ID = :diorama_id"; 
+        $query     = "UPDATE Dioramas SET Title = :title, Content = :content, Category_ID = :category_id WHERE Diorama_ID = :diorama_id"; 
         $statement = $db->prepare($query); 
         $statement->bindValue(':title', $title);     
-        $statement->bindValue(':content', $content); 
+        $statement->bindValue(':content', $content);
+        $statement->bindValue(':category_id', $category_id);
         $statement->bindValue(':diorama_id', $diorama_id, PDO::PARAM_INT); 
         
         // Execute the INSERT. 

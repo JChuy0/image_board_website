@@ -8,31 +8,41 @@ This script lets administrators access the users table, allowing them to view, c
     require 'connect.php';
     require 'authenticate.php';
 
-    if( (isset($_POST['command'])) && ($_POST['command'] === 'Create New User') ) {
-        $username    = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-        $userpass    = filter_input(INPUT_POST, 'userpass', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
-        $email       = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $accesslevel = filter_input(INPUT_POST, 'accesslevel', FILTER_SANITIZE_NUMBER_INT);
 
-        $hashed_password = password_hash($userpass, PASSWORD_DEFAULT);
+    if(isset($_POST['command'])) {
+        
+        if($_POST['command'] === 'Create New User') {
+            $username    = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);  
+            $userpass    = filter_input(INPUT_POST, 'userpass', FILTER_SANITIZE_FULL_SPECIAL_CHARS);  
+            $email       = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+            $accesslevel = filter_input(INPUT_POST, 'accesslevel', FILTER_SANITIZE_NUMBER_INT); 
+    
+            $hashed_password = password_hash($userpass, PASSWORD_DEFAULT); 
+    
+            $query = "INSERT INTO users (Username, Userpass, Email, AccessLevel) VALUES (:username, :userpass, :email, :accesslevel)"; 
+    
+            $statement = $db->prepare($query); 
+            $statement->bindValue(':username', $username); 
+            $statement->bindValue(':userpass', $hashed_password); 
+            $statement->bindValue(':email', $email); 
+            $statement->bindValue(':accesslevel', $accesslevel); 
+    
+            $statement->execute(); 
+            $insert_id = $db->lastInsertId();
 
-        $query = "INSERT INTO users (Username, Userpass, Email, AccessLevel) VALUES (:username, :userpass, :email, :accesslevel)";
+        } elseif($_POST['command'] === 'Delete') {
+            $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT); 
 
-        $statement = $db->prepare($query);
-        $statement->bindValue(':username', $username);
-        $statement->bindValue(':userpass', $hashed_password);
-        $statement->bindValue(':email', $email);
-        $statement->bindValue(':accesslevel', $accesslevel);
+            $query = "DELETE FROM users WHERE users.User_ID = :user_id";
+            $statement = $db->prepare($query);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->execute();
+        }
+    } 
 
-        $statement->execute();
-        $insert_id = $db->lastInsertId();
-
-        header("Location: users.php");
-    }
-
-        $query = "SELECT * FROM Users";
-        $statement = $db->prepare($query);
-        $statement->execute();
+    $query = "SELECT * FROM Users"; 
+    $statement = $db->prepare($query); 
+    $statement->execute();
 ?>
 
 
@@ -67,16 +77,16 @@ This script lets administrators access the users table, allowing them to view, c
         <legend>Create New User</legend>
         <p>
             <label for="username">Username:</label>
-            <input type="text" name="username" id="username" autofocus/>
+            <input type="text" name="username" id="username" required autofocus/>
 
             <label for="userpass">Password:</label>
-            <input type="text" name="userpass" id="userpass" />
+            <input type="password" name="userpass" id="userpass" required/>
 
             <label for="email">Email:</label>
-            <input type="text" name="email" id="email" />
+            <input type="text" name="email" id="email" required/>
 
             <label for="accesslevel">Access Level:</label>
-            <input type="text" name="accesslevel" id="accesslevel" />
+            <input type="text" name="accesslevel" id="accesslevel" required/>
         </p>
 
             <input type="hidden" name="id" />
@@ -101,7 +111,10 @@ This script lets administrators access the users table, allowing them to view, c
                             <td><?=$row['Email'] ?></td>
                             <td><?=$row['AccessLevel'] ?></td>
                             <td><a href="edit_user.php?editUser=true&ID=<?=$row['User_ID']?>">Edit</a></td>
-                            <td><a href="delete_User.php?deleteUser=true&ID=<?=$row['User_ID']?>" onclick="deleteUser()">Delete</a></td>
+                            <td><form method="post" >
+                                    <input type="submit" name="command" value="Delete" onclick="deleteUser()"/>
+                                    <input type="hidden" name="user_id" value="<?=$row['User_ID']?>" />
+                                </form></td>
                         </tr>
 
                     <?php endwhile ?>

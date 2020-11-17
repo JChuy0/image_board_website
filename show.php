@@ -14,10 +14,11 @@ This script lets you see the entire message of a post.
     if((filter_input(INPUT_GET, 'diorama_id', FILTER_VALIDATE_INT)) ) {
         $diorama_id = filter_input(INPUT_GET, 'diorama_id', FILTER_SANITIZE_NUMBER_INT);
 
-        $query = "SELECT Diorama_ID, Title, Content, Date_Posted, Date_Edited, Image_Name, Username, users.User_ID
-                    FROM dioramas, users
+        $query = "SELECT Diorama_ID, Title, Content, Date_Posted, Date_Edited, Image_Name, Username, users.User_ID, categories.Name
+                    FROM dioramas, users, categories
                         WHERE users.User_ID = dioramas.User_ID
-                        AND Dioramas.Diorama_ID = :diorama_id";
+                            AND categories.ID = dioramas.Category_ID
+                            AND Dioramas.Diorama_ID = :diorama_id";
         $statement = $db->prepare($query);
         $statement->bindvalue(':diorama_id', $diorama_id, PDO::PARAM_INT);
         $statement->execute();
@@ -70,28 +71,29 @@ This script lets you see the entire message of a post.
 <div id="all_blogs">
 
 <fieldset>
-    <?php ($row1 = $statement->fetch() ) ?>
+    <?php ($rowOne = $statement->fetch() ) ?>
 
     <div class="blog_post">
 
-        <h2><a href="show.php?diorama_id=<?= $row1['Diorama_ID'] ?>"><?= $row1['Title'] ?></a></h2>
+        <h2><a href="show.php?diorama_id=<?= $rowOne['Diorama_ID'] ?>"><?= $rowOne['Title'] ?></a></h2>
         <p>
             <small>
-            Posted by - <?= $row1['Username'] ?> | <?= date('F d, Y, h:i a', strtotime($row1['Date_Posted'])) ?> -
-            <a class="edit_post" href="edit.php?diorama_id=<?= $row1['Diorama_ID'] ?>">edit</a>
+            Posted by - <?= $rowOne['Username'] ?> | <?= date('F d, Y, h:i a', strtotime($rowOne['Date_Posted'])) ?>
+            Category - <?= $rowOne['Name'] ?>
+            <a class="edit_post" href="edit.php?diorama_id=<?= $rowOne['Diorama_ID'] ?>">edit</a>
 
-            <?php if($row1['Date_Edited'] !== NULL) : ?>
-                <br>Last Edited - <?= date('F d, Y, h:i a', strtotime($row1['Date_Edited'])) ?>
+            <?php if($rowOne['Date_Edited'] !== NULL) : ?>
+                <br>Last Edited - <?= date('F d, Y, h:i a', strtotime($rowOne['Date_Edited'])) ?>
             <?php endif ?>
 
             </small>
         </p>
             <div class='blog_content'>
-                <?= $row1['Content'] ?>
+                <?= $rowOne['Content'] ?>
             </div>
 
-        <?php if (strlen($row1['Image_Name']) > 1) : ?>
-            <img src="Uploads/<?= $row1['Image_Name']?>" alt="<?= $row1['Image_Name'] ?>" />
+        <?php if (strlen($rowOne['Image_Name']) > 1) : ?>
+            <img src="Uploads/<?= $rowOne['Image_Name']?>" alt="<?= $rowOne['Image_Name'] ?>" />
         <?php endif ?>
 
     </div> <!-- END div class="blog_post" -->
@@ -111,13 +113,13 @@ This script lets you see the entire message of a post.
 
     <p id="comment_block">
         <?php if($comment_Statement->rowcount() !== 0) : ?>
-            <?php while($row2 = $comment_Statement->fetch() ) : ?>
+            <?php while($rowTwo = $comment_Statement->fetch() ) : ?>
                 <p class="individual_comment">
-                    <?= $row2['Username'] ?> 
-                    <a class="comment_mod" href="delete_comment.php?diorama_id=<?=$row2['Diorama_ID']?>&deleteComment=true&comment_id=<?=$row2['Comment_ID']?>"
+                    <?= $rowTwo['Username'] ?> 
+                    <a class="comment_mod" href="delete_comment.php?diorama_id=<?=$rowTwo['Diorama_ID']?>&deleteComment=true&comment_id=<?=$rowTwo['Comment_ID']?>"
                          onclick="deleteComment()">Delete</a> <br>
-                    <?= $row2['Date_Posted'] ?> <br>
-                    <?= $row2['User_Comment'] ?>
+                    <?= $rowTwo['Date_Posted'] ?> <br>
+                    <?= $rowTwo['User_Comment'] ?>
 
                 </p>
             <?php endwhile ?>
@@ -142,7 +144,7 @@ This script lets you see the entire message of a post.
 
 
 <?php if(isset($_SESSION['AccessLevel'])) : ?>
-    <?php if(($_SESSION['User_ID'] === $row1['User_ID'] ) || ($_SESSION['AccessLevel'] === '5') ) : ?>
+    <?php if(($_SESSION['User_ID'] === $rowOne['User_ID'] ) || ($_SESSION['AccessLevel'] === '5') ) : ?>
         <script>
 
             var x = document.getElementsByClassName("edit_post");

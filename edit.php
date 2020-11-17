@@ -26,6 +26,10 @@ This script lets you edit existing blog posts.
     exit();
   }
 
+  $query = "SELECT * FROM categories";
+  $category_statement = $db->prepare($query);
+  $category_statement->execute();
+
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +69,16 @@ This script lets you edit existing blog posts.
         <input type="checkbox" id="imageCheckBox" name="imageCheckBox" value="deleteImage" />
         <label for="imageCheckBox"> Delete Image?</label><br>
       <?php endif ?>
-      
+
+      <li>
+          <label for="category">Category</label>
+          <select id=category" name="category">
+              <?php while($rowTwo = $category_statement->fetch() ) : ?>
+                  <option value="<?=$rowTwo['ID']?>"><?=$rowTwo['Name']?></option>
+              <?php endwhile ?>
+          </select>
+      </li>
+
       
         <input type="hidden" name="diorama_id" value="<?= $diorama_id?>" />
         <input type="submit" name="command" value="Update" />
