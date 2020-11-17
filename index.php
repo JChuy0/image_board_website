@@ -59,7 +59,7 @@ This script runs the home page.
     </div>
 
 <?php if(isset($_GET['orderby'])) : ?>
-    <p>Page has been ordered by <?= $_GET["orderby"]?> (<?= $_GET["sort"]?>)</p>
+    <p>Page has been ordered by <?= $orderby?> (<?= $sort?>)</p>
 <?php endif ?>
 
 <ul id="menu">
@@ -68,6 +68,7 @@ This script runs the home page.
     <li id="register_page"><a href="register.php" >Register</a></li>
     <li id="login_page"><a href="login.php" >Login</a></li>
     <li><a href="users.php" >Users</a></li>
+    <li><a href="category.php" >Categories</a></li>
 </ul> <!-- END div id="menu" -->
 
 <ul id="sortmenu">
