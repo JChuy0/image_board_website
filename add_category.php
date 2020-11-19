@@ -6,24 +6,33 @@ This script lets users add new categories.
 
 <?php
     require 'connect.php';
+
     session_start();
 
     if(!isset($_SESSION['Username'])) {
         exit("Sorry, only logged in users can create categories.");
     }
 
-    if( (isset($_POST['command'])) && ($_POST['command'] === 'Create New Category') ) {
-        $name    = filter_input(INPUT_POST, 'categoryname', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
+    if(isset($_POST['command'])) {
+        if($_POST['command'] === 'Create New Category') {
+            $name    = filter_input(INPUT_POST, 'categoryname', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
 
-        $query = "INSERT INTO categories (Name) VALUES (:name)";
+            $query = "INSERT INTO categories (Name) VALUES (:name)";
 
-        $statement = $db->prepare($query);
-        $statement->bindValue(':name', $name);
+            $statement = $db->prepare($query);
+            $statement->bindValue(':name', $name);
 
-        $statement->execute();
-        $insert_id = $db->lastInsertId();
+            $statement->execute();
+            $insert_id = $db->lastInsertId();
 
-        header("Location: category.php");
+        } elseif($_POST['command'] === 'Delete') {
+            $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT); 
+
+            $query = "DELETE FROM categories WHERE ID = :id";
+            $statement = $db->prepare($query);
+            $statement->bindValue(':id', $id);
+            $statement->execute();
+        }
     }
 
         $query = "SELECT * FROM categories";
@@ -79,6 +88,11 @@ This script lets users add new categories.
                         <tr>
                             <td><?=$row['ID'] ?></td>
                             <td><?=$row['Name'] ?></td>
+                            <td><a href="edit_category.php?editCategory=true&ID=<?=$row['ID']?>">Edit</a></td>
+                            <td><form method="post" >
+                                    <input type="submit" name="command" value="Delete" onclick="deleteCategory()"/>
+                                    <input type="hidden" name="id" value="<?=$row['ID']?>" />
+                                </form></td>
                         </tr>
 
                     <?php endwhile ?>
@@ -104,8 +118,8 @@ This script lets users add new categories.
 
 <script>
 
-function deleteUser() {
-    $result = confirm("Delete user?");
+function deleteCategory() {
+    $result = confirm("Delete category?");
     if(!$result) {
         event.preventDefault();
     }

@@ -6,12 +6,7 @@ This script runs the home page.
 
 <?php
     require 'connect.php';
-
-    print_r($_GET);
-
     session_start();
-    print_r($_SESSION);
-
 
     if((isset($_SESSION['Username'])) && (isset($_GET['orderby'])) ) {
 
@@ -27,15 +22,31 @@ This script runs the home page.
         if( ($orderby === "Title") || ($orderby === "Date_Posted") || ($orderby === "Date_Edited") ) {
             $query = "SELECT * FROM dioramas ORDER BY $orderby $sort";
             $statement = $db->prepare($query);
-            $statement->execute();            
+            $statement->execute();
         }
+
+    } elseif( (isset($_POST['command'])) && ($_POST['command'] === 'Search') ) {
+        $search = strtolower(filter_input(INPUT_POST, 'searchbar', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+
+        if($_POST['category'] > 0) {
+            $category_ID = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+
+            $category = "AND Category_ID = $category_ID";
+        }
+
+        $query = "SELECT * FROM dioramas WHERE lower(Title) LIKE '%$search%' $category ORDER BY diorama_id DESC";
+        $statement = $db->prepare($query);
+        $statement->execute();
 
     } else {
         $query = "SELECT * FROM dioramas ORDER BY diorama_id DESC";
         $statement = $db->prepare($query);
         $statement->execute();    
     }
-    
+
+    $query = "SELECT * FROM categories";
+    $category_statement = $db->prepare($query);
+    $category_statement->execute();  
 ?>
 
 <!DOCTYPE html>
@@ -71,6 +82,22 @@ This script runs the home page.
     <li><a href="category.php" >Categories</a></li>
 </ul> <!-- END div id="menu" -->
 
+<form method="post">
+    <label for="searchbar">Search:</label>
+    <input type="text" name="searchbar" id="searchbar" />
+
+    <select id=category" name="category">
+        <option value="0">All Categories</option>
+        <?php while($rowTwo = $category_statement->fetch() ) : ?>
+            <option value="<?=$rowTwo['ID']?>"><?=$rowTwo['Name']?></option>
+        <?php endwhile ?>
+    </select> <br>
+
+
+    <input type="submit" name="command" value="Search" />
+    <input type="submit" name="command" value="Clear" />
+</form>
+
 <ul id="sortmenu">
     <p>Sort by:</p>
     <li><a href="index.php?orderby=Title&sort=ASC" >Title (Ascending)</a></li>
@@ -83,15 +110,16 @@ This script runs the home page.
 
 
 <div id="all_blogs">
-    <?php while($row = $statement->fetch() ) : ?>
-
-        <div class="blog_post">
-        <h2><a href="show.php?diorama_id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2>
-        </div> <!-- END div class="blog_post" -->
-    <?php endwhile ?>
+    <?php if($statement->rowcount() === 0) : ?>
+        <p>Sorry, there are no results for '<?=$search?>'.</p>
+    <?php else : ?>
+        <?php while($row = $statement->fetch() ) : ?>
+            <div class="blog_post">
+                <h2><a href="show.php?diorama_id=<?= $row['Diorama_ID'] ?>"><?= $row['Title'] ?></a></h2> <?=$row['Date_Posted']?>
+            </div> <!-- END div class="blog_post" -->
+        <?php endwhile ?>
+    <?php endif ?>
 </div> <!-- END div id="all_blogs" -->
-
-
 
     <div id="footer">
         Copywrong 2020 - No Rights Reserved
